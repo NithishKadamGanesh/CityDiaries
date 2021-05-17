@@ -23,4 +23,6 @@ Instructions:
 
 6. type http://localhost:3000 on your browser to begin.
 
+Api Doc- https://documenter.getpostman.com/view/15824392/TzRXA5vS
+
 
