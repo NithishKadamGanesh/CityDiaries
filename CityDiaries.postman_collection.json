@@ -1,0 +1,421 @@
+{
+	"info": {
+		"_postman_id": "0230e491-586c-46ab-98f2-71a9c9da2be4",
+		"name": "CityDiaries",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000"
+				},
+				"description": "Renders the home/landing pag. from here the user can navigate the site"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/spots",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/spots",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"spots"
+					]
+				},
+				"description": "Renders All the spots added by all users"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/login",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				},
+				"description": "Renders the login page"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "nithish",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "nithish",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				},
+				"description": "You can login with the credentials if you are registered . it redirects you to the spots page\n\nPlease edit data values before use"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/register",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"register"
+					]
+				},
+				"description": "Renders the registration page for users to register"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "akash1",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "akash1@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "akash1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"register"
+					]
+				},
+				"description": "Register user \ngiven parameters: username,\n                  email,\n                  password\n\nPlease edit data values before use"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/spots",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/Users/nithishkadam/Desktop/demo.png"
+						},
+						{
+							"key": "spot[title]",
+							"value": "mg road",
+							"type": "text"
+						},
+						{
+							"key": "spot[location]",
+							"value": "bangalole",
+							"type": "text"
+						},
+						{
+							"key": "spot[category]",
+							"value": "Attraction",
+							"type": "text"
+						},
+						{
+							"key": "spot[description]",
+							"value": "nice!!",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/spots",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"spots"
+					]
+				},
+				"description": "Renders the form page to add a new spot.\n\nPlease edit data values before use"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/spots/:id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/spots/60a279b6162d7c7053379320",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"spots",
+						"60a279b6162d7c7053379320"
+					]
+				},
+				"description": "Render the spot chosen. if the spot is created by the  current loggedIn user then edit and delete buttons are displayed. Anyone who is registered and loggedIn can comment on a spot.\n\nplease find the :id from GET /spots body."
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/spots/:id/edit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/spots/60a279b6162d7c7053379320/edit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"spots",
+						"60a279b6162d7c7053379320",
+						"edit"
+					]
+				},
+				"description": "Renders the edit page to edit the spot.\nthe values are pre-filled with data already present.\n\nplease find the :id from GET /spots body."
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/spots/:id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "spot[title]",
+							"value": "mg road",
+							"type": "text"
+						},
+						{
+							"key": "spot[location]",
+							"value": "bangalore",
+							"type": "text"
+						},
+						{
+							"key": "spot[category]",
+							"value": "Attraction",
+							"type": "text"
+						},
+						{
+							"key": "spot[description]",
+							"value": "nice place!!",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/Users/nithishkadam/Desktop/demo2.jpeg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/spots/60a279b6162d7c7053379320",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"spots",
+						"60a279b6162d7c7053379320"
+					]
+				},
+				"description": "Edit the spot as required. you can add an image or even delete an image.\n\nPlease edit data values before use and please find the :id from GET /spots body."
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/spots/:id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/spots/60a27484162d7c705337931b",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"spots",
+						"60a27484162d7c705337931b"
+					]
+				},
+				"description": "Delete the whole spot if you are the user who created it.\n\nplease find the :id from GET /spots body."
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/spots/myspots",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/spots/myspots",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"spots",
+						"myspots"
+					]
+				},
+				"description": "Shows all spots added by the current LoggedIn useer"
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/spots/:id/reviews",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "review[body]",
+							"value": "nice place to visit!!",
+							"type": "text"
+						},
+						{
+							"key": "review[rating]",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/spots/60a279b6162d7c7053379320/reviews",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"spots",
+						"60a279b6162d7c7053379320",
+						"reviews"
+					]
+				},
+				"description": "leaving a review with a body and a rating from 1-5 for the spot specified by the id\n\nplease find the :id from GET /spots body."
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/spots/60a279b6162d7c7053379320/reviews/:reviewId",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/spots/60a279b6162d7c7053379320/reviews/60a28225162d7c705337932a",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"spots",
+						"60a279b6162d7c7053379320",
+						"reviews",
+						"60a28225162d7c705337932a"
+					]
+				},
+				"description": "Delete the review if the author of the review is the current user who is loggedIn.\n\nplease find the :reviewId from POST /spots/:id/reviews body"
+			},
+			"response": []
+		}
+	]
+}
