@@ -18,7 +18,9 @@ module.exports.renderNewForm = (req, res) => {
 
 module.exports.createSpot = async (req, res, next) => {
     const spot = new Spot(req.body.spot);
-    spot.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    if (req.files) {
+        spot.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    }
     spot.author = req.user._id;
     await spot.save();
     console.log(spot);

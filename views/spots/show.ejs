@@ -31,6 +31,7 @@
         <div class="card mb-3">
             <div class="card-body">
                 <h5 class="card-title"><%= spot.title%></h5>
+                <p>Spot Id:<%= spot._id %></p>
                 <p class="card-text"><%= spot.description%></p>
             </div>
             <ul class="list-group list-group-flush">
@@ -54,8 +55,9 @@
     </div>
     <div class="col-6">
 
-        <iframe width="600" height="350" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCe2Ha7ugR_vIylz5ojFnR0y8EKiunFR9A
-          &q=`<%= spot.title %> `,`<%= spot.location %>`" allowfullscreen>
+        <iframe width="600" height="350" frameborder="0" style="border:0"
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCe2Ha7ugR_vIylz5ojFnR0y8EKiunFR9A&q=`<%= spot.title %> `,`<%= spot.location %>`"
+            allowfullscreen>
         </iframe>
 
         <% if(currentUser){ %>
@@ -77,6 +79,7 @@
                 <label for="first-rate5" title="Amazing">5 stars</label>
             </fieldset>
             <div class="mb-3">
+
                 <label class="form-label" for="body">Review Text</label>
                 <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
                 <div class="valid-feedback">
@@ -90,11 +93,14 @@
         <div class="card mb-3 ">
             <div class="card-body">
                 <h5 class="card-title"> <%= review.author.username%></h5>
+                <p>Review Id:<%= review._id %></p>
+
                 <p class="starability-result" data-rating="<%=review.rating%>">
                     Rated: <%= review.rating %> stars
                 </p>
 
                 <p class="card-text">Review: <%= review.body %></p>
+
                 <%  if( currentUser && review.author.equals(currentUser._id))  {%>
                 <form action="/spots/<%=spot._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST">
                     <button class="btn btn-sm btn-danger">Delete</button>
