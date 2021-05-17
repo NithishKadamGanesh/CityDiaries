@@ -13,8 +13,8 @@ Instructions:
 
 4. create .env file and add credentials like
 
-CLOUDINARY_CLOUD_NAME=your cloudinary_cloud_name
-CLOUDINARY_KEY=your cloudinary_key
+CLOUDINARY_CLOUD_NAME=your cloudinary_cloud_name 
+CLOUDINARY_KEY=your cloudinary_key 
 CLOUDINARY_SECRET=your cloudinary_secret
 
 5. run 'node app.js' on terminal to start.
