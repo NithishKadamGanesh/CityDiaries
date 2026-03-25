@@ -5,53 +5,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CityDiaries</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
-        integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/stylesheets/app.css">
     <link rel="stylesheet" href="/stylesheets/home.css">
 </head>
 
-<body class="d-flex text-center text-white bg-dark">
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-        <header class="mb-auto">
-            <div>
-                <h3 class="float-md-left mb-0">CityDiaries</h3>
-                <nav class="nav nav-masthead justify-content-center float-md-right">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    <a class="nav-link" href="/spots">Explore</a>
-                    <a class="nav-link" href="/spots/myspots">MyDiary</a>
-
-
-                    <% if(!currentUser) { %>
-                    <a class="nav-link" href="/login">Login</a>
-                    <a class="nav-link" href="/register">Register</a>
-                    <% } else { %>
-                    <a class="nav-link" href="/logout">Logout</a>
+<body class="home-shell">
+    <section class="home-hero">
+        <div class="container">
+            <nav class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between py-4 gap-3">
+                <a href="/" class="brand-mark text-white text-decoration-none">CityDiaries</a>
+                <div class="d-flex flex-wrap gap-3 align-items-center home-nav">
+                    <a href="/">Home</a>
+                    <a href="/spots">Explore</a>
+                    <a href="/spots/myspots">My Diary</a>
+                    <% if (currentUser) { %>
+                        <a href="/spots/saved">Saved</a>
                     <% } %>
-                </nav>
+                    <% if (!currentUser) { %>
+                        <a href="/login">Login</a>
+                        <a href="/register" class="btn btn-light rounded-pill px-4">Start writing</a>
+                    <% } else { %>
+                        <a href="/spots/new" class="btn btn-light rounded-pill px-4">Add a spot</a>
+                    <% } %>
+                </div>
+            </nav>
+
+            <div class="row align-items-center g-5 hero-grid">
+                <div class="col-lg-7">
+                    <div class="eyebrow">Travel journal meets city guide</div>
+                    <h1 class="display-3 fw-bold hero-title">Save the places you loved, not just the ones you visited.</h1>
+                    <p class="hero-copy">CityDiaries lets you collect memorable spots, upload photos, write thoughtful notes, and discover places other people keep recommending long after the trip is over.</p>
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <a href="/spots" class="btn btn-light btn-lg rounded-pill px-4">Explore diaries</a>
+                        <a href="/spots/new" class="btn btn-outline-light btn-lg rounded-pill px-4">Create an entry</a>
+                    </div>
+                    <% if (dbInfo && dbInfo.isInMemory) { %>
+                        <div class="preview-callout mt-4">
+                            <strong>Preview mode is on.</strong>
+                            Demo account: <code>demo</code> / <code>citydiaries123</code>
+                        </div>
+                    <% } %>
+                </div>
+                <div class="col-lg-5">
+                    <div class="glass-panel">
+                        <div class="stats-grid">
+                            <div>
+                                <div class="stat-number"><%= featuredSpots.length %></div>
+                                <div class="stat-label">Featured spots</div>
+                            </div>
+                            <div>
+                                <div class="stat-number">5.0</div>
+                                <div class="stat-label">Max star rating</div>
+                            </div>
+                            <div>
+                                <div class="stat-number">1</div>
+                                <div class="stat-label">Shared diary feed</div>
+                            </div>
+                        </div>
+                        <hr class="border-secondary-subtle">
+                        <div class="mini-stack">
+                            <% featuredSpots.forEach(spot => { %>
+                                <a class="mini-card text-decoration-none" href="/spots/<%= spot._id %>">
+                                    <img src="<%= spot.coverImage %>" alt="<%= spot.title %>">
+                                    <div>
+                                        <div class="mini-card-title"><%= spot.title %></div>
+                                        <div class="mini-card-meta"><%= spot.location %> · <%= spot.category %></div>
+                                    </div>
+                                </a>
+                            <% }) %>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </header>
-        <main class="px-3">
-            <h1>CityDiaries</h1>
-            <p class="lead"> Welcome to CityDiaries! <br> Jump right in and explore our many Hotspts. <br>
-                Feel free to share some of your own and comment on others!</p>
-            <a href="/spots" class="btn btn-lg btn-secondary font-weight-bold border-white bg-white">Explore
-            </a>
-        </main>
+        </div>
+    </section>
 
-        <footer class="mt-auto text-white-50">
-            <p>&copy; 2020 </p>
-        </footer>
-
-
-    </div>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
-        integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
-        crossorigin="anonymous"></script>
+    <section class="home-feature-band">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <h2>Capture context</h2>
+                        <p>Add notes, images, categories, and exact locations so your recommendations feel personal instead of generic.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <h2>Explore better</h2>
+                        <p>Filter by category, search by city or keyword, and sort by rating or recency when you want inspiration fast.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <h2>Keep your own diary</h2>
+                        <p>Use a personal feed for spots you have already documented, then come back later to edit or expand them.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </body>
 
 </html>

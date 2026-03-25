@@ -1,23 +1,27 @@
-<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">CityDiaries</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+<nav class="navbar navbar-expand-lg border-bottom border-light-subtle sticky-top app-nav">
+    <div class="container py-2">
+        <a class="navbar-brand brand-mark" href="/">CityDiaries</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="navbar-nav me-auto">
                 <a class="nav-link" href="/">Home</a>
                 <a class="nav-link" href="/spots">Explore</a>
                 <a class="nav-link" href="/spots/new">New Entry</a>
                 <a class="nav-link" href="/spots/myspots">My Diary</a>
+                <% if (currentUser) { %>
+                    <a class="nav-link" href="/spots/saved">Saved</a>
+                <% } %>
             </div>
-            <div class="navbar-nav ml-auto">
-                <% if(!currentUser) {%>
-                <a class="nav-link" href="/login">Login</a>
-                <a class="nav-link" href="/register">Register</a>
-                <% } else {%>
-                <a class="nav-link" href="/logout">Logout</a>
+            <div class="navbar-nav align-items-lg-center gap-lg-2">
+                <% if (!currentUser) { %>
+                    <a class="nav-link" href="/login">Login</a>
+                    <a class="btn btn-sm btn-light rounded-pill px-3" href="/register">Create account</a>
+                <% } else { %>
+                    <span class="nav-link small text-secondary">Signed in as <strong><%= currentUser.username %></strong></span>
+                    <a class="btn btn-sm btn-outline-light rounded-pill px-3" href="/logout">Logout</a>
                 <% } %>
             </div>
         </div>

@@ -1,75 +1,62 @@
-<% layout('layouts/boilerplate')%>
-<link rel="stylesheet" href="/stylesheets/background.css">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
-    integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-<div class="row">
-    <h1 class="text-center">Edit Spot</h1>
-    <div class="col-6 offset-3">
-        <form action="/spots/<%=spot._id%>?_method=PUT" method="POST" novalidate class="validated-form"
-            enctype="multipart/form-data">
-            <div class="mb-3">
-                <label class="form-label" for="title">Title</label>
-                <input class="form-control" type="text" id="title" name="spot[title]" value="<%=spot.title %>" required>
-                <div class="valid-feedback">
-                    Looks good!
+<% layout('layouts/boilerplate') %>
+
+<section class="container py-4 py-lg-5">
+    <div class="form-shell mx-auto">
+        <div class="eyebrow text-primary">Update entry</div>
+        <h1 class="display-6 mb-2">Edit your diary note</h1>
+        <p class="section-copy mb-4">Refresh the details, add more photos, or clean up anything you want to improve.</p>
+
+        <form action="/spots/<%= spot._id %>?_method=PUT" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="row g-3">
+                <div class="col-md-7">
+                    <label class="form-label" for="title">Title</label>
+                    <input class="form-control form-control-lg" type="text" id="title" name="spot[title]" value="<%= spot.title %>" required>
                 </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="location">Location</label>
-                <input class="form-control" type="text" id="location" name="spot[location]" value="<%=spot.location %>"
-                    required>
-                <div class="valid-feedback">
-                    Looks good!
+                <div class="col-md-5">
+                    <label class="form-label" for="category">Category</label>
+                    <select class="form-select form-select-lg" id="category" name="spot[category]" required>
+                        <option value="">Choose a category</option>
+                        <% categories.forEach(category => { %>
+                            <option value="<%= category %>" <%= spot.category === category ? 'selected' : '' %>><%= category %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="location">Location</label>
+                    <input class="form-control form-control-lg" type="text" id="location" name="spot[location]" value="<%= spot.location %>" required>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea class="form-control" id="description" name="spot[description]" rows="6" required><%= spot.description %></textarea>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="image">Add more photos</label>
+                    <input type="file" class="form-control" id="image" name="image" multiple accept=".jpg,.jpeg,.png,.webp">
                 </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label" for="category">category</label>
-                <select class="form-select" aria-label="Default select example" id="category" name="spot[category]"
-                    required>
-                    <option selected>choose one....</option>
-                    <option value="Food">Food</option>
-                    <option value="Attraction">Attraction</option>
-                    <option value="Adventure And Sports">Adventure And Sports</option>
-                    <option value="Exhibition">Exhibition</option>
-                    <option value="NGO">NGO</option>
-                </select>
-                <div class="valid-feedback">
-                    Looks good!
+            <% if (spot.images.length) { %>
+                <div class="mt-4">
+                    <h2 class="h5 mb-3">Current photos</h2>
+                    <div class="image-grid">
+                        <% spot.images.forEach((img, i) => { %>
+                            <label class="image-check-card">
+                                <img src="<%= img.thumbnail || img.url %>" alt="Spot image <%= i + 1 %>">
+                                <span class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="deleteImages[]" value="<%= img.filename %>">
+                                    <span>Remove</span>
+                                </span>
+                            </label>
+                        <% }) %>
+                    </div>
                 </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="description">Description</label>
-                <textarea class="form-control" type="text" id="description" name="spot[description]"
-                    required><%= spot.description%></textarea>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-            </div>
-            <div class="mb-3">
-                <div class="form-file custom-file">
-                    <input type="file" class="form-file-input" id="image" name="image" multiple>
-                    <label class="form-file-label" for="image">
-                        <span class="form-file-text custom-file-label">Add more image(s)...</span>
-                        <span class="form-file-button">Browse</span>
-                    </label>
-                </div>
-            </div>
-            <div class="mb-3">
-                <% spot.images.forEach(function(img, i) {  %>
+            <% } %>
 
-                <img src="<%=img.thumbnail %>" class="img-thumbnail" alt="">
-                <div class="form-check-inline">
-                    <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.filename%>">
-                </div>
-                <label for="image-<%=i%>">Delete?</label>
-                <% })%>
-            </div>
-            <div class="mb-3">
-                <button class="btn btn-info">Update spot</button>
+            <div class="d-flex flex-wrap gap-3 mt-4">
+                <button class="btn btn-primary btn-lg rounded-pill px-4">Save changes</button>
+                <a href="/spots/<%= spot._id %>" class="btn btn-outline-dark btn-lg rounded-pill px-4">Back to entry</a>
             </div>
         </form>
-        <a href="/spots/<%= spot._id%>">Back To spot</a>
-
     </div>
-</div>
+</section>

@@ -1,0 +1,262 @@
+:root {
+    --bg: #f6f1e8;
+    --surface: rgba(255, 255, 255, 0.82);
+    --ink: #18222f;
+    --muted: #607083;
+    --line: rgba(24, 34, 47, 0.1);
+    --primary: #0c7c59;
+    --primary-strong: #065f46;
+    --shadow: 0 18px 50px rgba(16, 27, 38, 0.12);
+    --radius-xl: 28px;
+}
+
+body {
+    font-family: 'Manrope', sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at top left, rgba(233, 180, 76, 0.22), transparent 34%),
+        linear-gradient(180deg, #fbf7ef 0%, #f2ede2 100%);
+}
+
+h1, h2, h3, .brand-mark {
+    font-family: 'Playfair Display', serif;
+}
+
+.app-shell {
+    min-height: 100vh;
+}
+
+.app-nav {
+    backdrop-filter: blur(18px);
+    background: rgba(24, 34, 47, 0.88);
+}
+
+.brand-mark {
+    color: #fff;
+    font-size: 1.7rem;
+    letter-spacing: -0.02em;
+}
+
+.page-shell {
+    min-height: calc(100vh - 150px);
+}
+
+.navbar .nav-link {
+    color: rgba(255, 255, 255, 0.76);
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus {
+    color: #fff;
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.74rem;
+    font-weight: 800;
+}
+
+.section-heading {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: space-between;
+    align-items: end;
+}
+
+.section-copy,
+.footer-copy {
+    color: var(--muted);
+    max-width: 62ch;
+}
+
+.search-panel,
+.spot-card,
+.detail-card,
+.form-shell,
+.auth-shell,
+.empty-state {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+}
+
+.search-panel,
+.detail-card,
+.form-shell,
+.auth-shell,
+.empty-state {
+    padding: 1.5rem;
+}
+
+.spot-card {
+    overflow: hidden;
+}
+
+.spot-card-image {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+}
+
+.spot-card-body {
+    padding: 1.4rem;
+}
+
+.spot-card-copy {
+    color: var(--muted);
+    min-height: 4.8rem;
+}
+
+.spot-card-meta,
+.detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    color: var(--muted);
+    font-size: 0.94rem;
+}
+
+.rating-pill,
+.rating-panel {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 86px;
+    padding: 0.8rem 1rem;
+    border-radius: 20px;
+    background: rgba(12, 124, 89, 0.1);
+    color: var(--primary-strong);
+}
+
+.rating-score {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.detail-hero-image {
+    width: 100%;
+    min-height: 420px;
+    object-fit: cover;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+}
+
+.detail-copy {
+    font-size: 1.02rem;
+    line-height: 1.8;
+    color: #31404f;
+}
+
+.map-frame {
+    width: 100%;
+    height: 320px;
+    border: 0;
+    border-radius: 22px;
+}
+
+.review-card {
+    padding: 1rem 0;
+    border-top: 1px solid var(--line);
+}
+
+.review-card:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+}
+
+.form-shell,
+.auth-shell {
+    max-width: 760px;
+}
+
+.auth-shell {
+    max-width: 560px;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+.image-check-card {
+    display: block;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--line);
+}
+
+.image-check-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+
+.image-check-card .form-check {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    padding: 0.9rem;
+}
+
+.pagination .page-link {
+    border: 0;
+    background: rgba(255, 255, 255, 0.78);
+    color: var(--ink);
+    box-shadow: 0 8px 22px rgba(16, 27, 38, 0.08);
+}
+
+.pagination .active .page-link {
+    background: var(--ink);
+    color: #fff;
+}
+
+.preview-callout {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 1rem 1.2rem;
+    border-radius: 18px;
+    color: inherit;
+}
+
+.footer-shell {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px);
+}
+
+.btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background: var(--primary-strong);
+    border-color: var(--primary-strong);
+}
+
+@media (max-width: 767px) {
+    .search-panel,
+    .detail-card,
+    .form-shell,
+    .auth-shell,
+    .empty-state {
+        padding: 1.2rem;
+        border-radius: 22px;
+    }
+
+    .detail-hero-image {
+        min-height: 260px;
+    }
+}

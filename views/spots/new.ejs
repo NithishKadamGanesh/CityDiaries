@@ -1,62 +1,49 @@
-<% layout('layouts/boilerplate')%>
-<link rel="stylesheet" href="/stylesheets/background.css">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
-    integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-<div class="row">
-    <h1 class="text-center">New Spot</h1>
-    <div class="col-6 offset-3">
-        <form action="/spots" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label class="form-label" for="title">Title</label>
-                <input class="form-control" type="text" id="title" name="spot[title]" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="location">Location</label>
-                <input class="form-control" type="text" id="location" name="spot[location]" required>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="category">category</label>
-                <select class="form-select" aria-label="Default select example" id="category" name="spot[category]"
-                    required>
-                    <option selected>choose one....</option>
-                    <option value="Food">Food</option>
-                    <option value="Attraction">Attraction</option>
-                    <option value="Adventure And Sports">Adventure And Sports</option>
-                    <option value="Exhibition">Exhibition</option>
-                    <option value="NGO">NGO</option>
-                </select>
-                <div class="valid-feedback">
-                    Looks good!
-                </div>
-            </div>
+<% layout('layouts/boilerplate') %>
 
-            <div class="mb-3">
-                <label class="form-label" for="description">Description</label>
-                <textarea class="form-control" type="text" id="description" name="spot[description]"
-                    required></textarea>
-                <div class="valid-feedback">
-                    Looks good!
+<section class="container py-4 py-lg-5">
+    <div class="form-shell mx-auto">
+        <div class="eyebrow text-primary">New diary entry</div>
+        <h1 class="display-6 mb-2">Add a place worth remembering</h1>
+        <p class="section-copy mb-4">Capture what made this spot stand out so your future self or other travelers can find it again.</p>
+
+        <form action="/spots" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="row g-3">
+                <div class="col-md-7">
+                    <label class="form-label" for="title">Title</label>
+                    <input class="form-control form-control-lg" type="text" id="title" name="spot[title]" required>
+                    <div class="invalid-feedback">Please name the spot.</div>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label" for="category">Category</label>
+                    <select class="form-select form-select-lg" id="category" name="spot[category]" required>
+                        <option value="">Choose a category</option>
+                        <% categories.forEach(category => { %>
+                            <option value="<%= category %>"><%= category %></option>
+                        <% }) %>
+                    </select>
+                    <div class="invalid-feedback">Please choose a category.</div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="location">Location</label>
+                    <input class="form-control form-control-lg" type="text" id="location" name="spot[location]" placeholder="City, country or neighborhood" required>
+                    <div class="invalid-feedback">Please add a location.</div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea class="form-control" id="description" name="spot[description]" rows="6" required></textarea>
+                    <div class="invalid-feedback">Please add a short description.</div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="image">Photos</label>
+                    <input type="file" class="form-control" id="image" name="image" multiple accept=".jpg,.jpeg,.png,.webp">
+                    <div class="form-text">Add a few images if you have them. Local uploads work in preview mode too.</div>
                 </div>
             </div>
-            <div class="mb-3">
-                <div class="form-file custom-file">
-                    <input type="file" class="form-file-input" id="image" name="image" multiple>
-                    <label class="form-file-label" for="image">
-                        <span class="form-file-text custom-file-label">Choose image(s)...</span>
-                        <span class="form-file-button">Browse</span>
-                    </label>
-                </div>
-            </div>
-            <div class="mb-3">
-                <button class="btn btn-success">Add Spot</button>
+            <div class="d-flex flex-wrap gap-3 mt-4">
+                <button class="btn btn-primary btn-lg rounded-pill px-4">Publish entry</button>
+                <a href="/spots" class="btn btn-outline-dark btn-lg rounded-pill px-4">Back to explore</a>
             </div>
         </form>
-        <a href="/spots">All Spots</a>
     </div>
-</div>
+</section>

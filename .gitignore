@@ -1,0 +1,8 @@
+node_modules/
+.env
+cookies.txt
+login.html
+server*.log
+*.png
+public/uploads/*
+!public/uploads/.gitkeep

@@ -1,28 +1,72 @@
 # CityDiaries
-CityDiaries is as the name suggests a diary of the city you visit, where you can add all the places you've visited, or explore spots other people have added.You can leave a review and comments or get directions to the place you like.
 
-https://drive.google.com/file/d/1AKNWGgQdB1jVgxHdhj1Srup5VytUzIPE/view?usp=sharing
+CityDiaries is a full-stack Express app for collecting memorable places from your travels. Users can create diary entries for spots they love, upload photos, leave reviews, browse a shared feed, and keep a personal "My Diary" collection.
 
-Instructions:
+## What Changed
 
-1. run 'npm install' to install all the dependencies.
+This upgraded version includes:
 
-2. create a cloudinary account and copy credentials
+- safer app config with environment-based secrets
+- in-memory Mongo preview mode when `MONGO_URL` is not set
+- seeded demo data for local previews
+- local upload fallback when Cloudinary is not configured
+- search, category filters, sorting, and pagination on the explore feed
+- rating averages and review counts on cards and detail pages
+- stronger validation, CSRF protection, Helmet, and Mongo sanitization
+- refreshed landing page, explore feed, auth screens, and detail layout
 
-3. create a google maps api key and add the key in spots/show.ejs file. 
+## Quick Start
 
-4. create .env file and add credentials like
+1. Install dependencies:
 
-      CLOUDINARY_CLOUD_NAME=your cloudinary_cloud_name 
-      
-      CLOUDINARY_KEY=your cloudinary_key 
-      
-      CLOUDINARY_SECRET=your cloudinary_secret
+   ```bash
+   npm install
+   ```
 
-5. run 'node app.js' on terminal to start.
+2. Optionally create a `.env` file from `.env.example`.
 
-6. type http://localhost:3000 on your browser to begin.
+3. Start the app:
 
-Api Doc- https://documenter.getpostman.com/view/15824392/TzRXA5vS
+   ```bash
+   npm start
+   ```
 
+4. Open [http://localhost:3000](http://localhost:3000)
 
+## Preview Mode
+
+If you do not set `MONGO_URL`, the app automatically starts an in-memory MongoDB instance and seeds a demo account plus sample spots.
+
+Demo login:
+
+- Username: `demo`
+- Password: `citydiaries123`
+
+This makes the project runnable even without a local MongoDB install.
+
+## Optional Environment Variables
+
+See [.env.example](./.env.example)
+
+Useful values:
+
+- `MONGO_URL`
+- `SESSION_SECRET`
+- `PORT`
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_KEY`
+- `CLOUDINARY_SECRET`
+
+## File Uploads
+
+- With Cloudinary credentials, uploads go to Cloudinary.
+- Without Cloudinary credentials, uploads are stored locally in `public/uploads`.
+
+## Notes
+
+- The map preview uses a Google Maps embed query URL and no longer requires hardcoding an API key in the template.
+- The repo still does not include automated tests yet.
+
+## API Docs
+
+[Postman documentation](https://documenter.getpostman.com/view/15824392/TzRXA5vS)

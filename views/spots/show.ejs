@@ -1,113 +1,121 @@
-<% layout('layouts/boilerplate')%>
+<% layout('layouts/boilerplate') %>
 <link rel="stylesheet" href="/stylesheets/stars.css">
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
-    integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-<link rel="stylesheet" href="/stylesheets/background.css">
+<section class="container py-4 py-lg-5">
+    <div class="row g-4 g-lg-5">
+        <div class="col-lg-7">
+            <img src="<%= spot.coverImage %>" class="detail-hero-image" alt="<%= spot.title %>">
 
-<div class="row">
-    <div class="col-6">
-        <div id="spotCarousel" class="carousel slide" data-ride="carousel">
-            <div class="carousel-inner">
-                <% spot.images.forEach((img, i) => {  %>
-                <div class="carousel-item <%= i === 0 ? 'active' : ''%>">
-                    <img src="<%= img.url%>" class="d-block w-100" width="500" height="350" alt="">
+            <div class="detail-card mt-4">
+                <div class="d-flex flex-wrap justify-content-between gap-3">
+                    <div>
+                        <span class="badge text-bg-light rounded-pill mb-2"><%= spot.category %></span>
+                        <h1 class="display-6 mb-2"><%= spot.title %></h1>
+                        <p class="text-secondary mb-0"><%= spot.location %></p>
+                    </div>
+                    <div class="rating-panel">
+                        <div class="rating-score"><%= spot.ratingAverage.toFixed(1) %></div>
+                        <div class="text-secondary"><%= spot.ratingCount %> review<%= spot.ratingCount === 1 ? '' : 's' %></div>
+                    </div>
                 </div>
-                <% }) %>
 
-            </div>
-            <% if(spot.images.length > 1) {%>
-            <a class="carousel-control-prev" href="#spotCarousel" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#spotCarousel" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
-            <% } %>
-        </div>
+                <p class="detail-copy mt-4"><%= spot.description %></p>
 
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title"><%= spot.title%></h5>
-                <p>Spot Id:<%= spot._id %></p>
-                <p class="card-text"><%= spot.description%></p>
-            </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item text-muted"><%= spot.location%></li>
-                <li class="list-group-item">Submitted by <%= spot.author.username%></li>
-                <li class="list-group-item"><%= spot.category%></li>
-            </ul>
-            <%  if( currentUser && spot.author.equals(currentUser._id))  {%>
-            <div class="card-body">
-                <a class="card-link btn btn-info" href="/spots/<%=spot._id%>/edit">Edit</a>
-                <form class="d-inline" action="/spots/<%=spot._id%>?_method=DELETE" method="POST">
-                    <button class="btn btn-danger">Delete</button>
-                </form>
-            </div>
-            <% } %>
-            <div class="card-footer text-muted">
-                2 days ago
-            </div>
-        </div>
-
-    </div>
-    <div class="col-6">
-
-        <iframe width="600" height="350" frameborder="0" style="border:0"
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCe2Ha7ugR_vIylz5ojFnR0y8EKiunFR9A&q=`<%= spot.title %> `,`<%= spot.location %>`"
-            allowfullscreen>
-        </iframe>
-
-        <% if(currentUser){ %>
-        <h2>Leave a Review</h2>
-        <form action="/spots/<%=spot._id%>/reviews" method="POST" class="mb-3 validated-form" novalidate>
-
-            <fieldset class="starability-basic">
-                <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked
-                    aria-label="No rating." />
-                <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-                <label for="first-rate1" title="Terrible">1 star</label>
-                <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-                <label for="first-rate2" title="Not good">2 stars</label>
-                <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-                <label for="first-rate3" title="Average">3 stars</label>
-                <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-                <label for="first-rate4" title="Very good">4 stars</label>
-                <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-                <label for="first-rate5" title="Amazing">5 stars</label>
-            </fieldset>
-            <div class="mb-3">
-
-                <label class="form-label" for="body">Review Text</label>
-                <textarea class="form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
-                <div class="valid-feedback">
-                    Looks good!
+                <div class="detail-meta">
+                    <span>Shared by <strong><%= spot.author.username %></strong></span>
+                    <span>Published <%= spot.createdAt.toLocaleDateString() %></span>
+                    <span>Category: <%= spot.category %></span>
                 </div>
-            </div>
-            <button class="btn btn-success">Submit</button>
-        </form>
-        <% } %>
-        <% for(let review of spot.reviews) { %>
-        <div class="card mb-3 ">
-            <div class="card-body">
-                <h5 class="card-title"> <%= review.author.username%></h5>
-                <p>Review Id:<%= review._id %></p>
 
-                <p class="starability-result" data-rating="<%=review.rating%>">
-                    Rated: <%= review.rating %> stars
-                </p>
+                <% if (currentUser) { %>
+                    <form action="/spots/<%= spot._id %>/favorite" method="POST" class="mt-4">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button class="btn <%= isFavorited ? 'btn-warning' : 'btn-outline-dark' %> rounded-pill px-4">
+                            <%= isFavorited ? 'Saved to favorites' : 'Save this spot' %>
+                        </button>
+                    </form>
+                <% } %>
 
-                <p class="card-text">Review: <%= review.body %></p>
-
-                <%  if( currentUser && review.author.equals(currentUser._id))  {%>
-                <form action="/spots/<%=spot._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST">
-                    <button class="btn btn-sm btn-danger">Delete</button>
-                </form>
+                <% if (currentUser && spot.author.equals(currentUser._id)) { %>
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <a class="btn btn-dark rounded-pill px-4" href="/spots/<%= spot._id %>/edit">Edit entry</a>
+                        <form action="/spots/<%= spot._id %>?_method=DELETE" method="POST">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button class="btn btn-outline-danger rounded-pill px-4">Delete entry</button>
+                        </form>
+                    </div>
                 <% } %>
             </div>
         </div>
-        <% } %>
+
+        <div class="col-lg-5">
+            <div class="detail-card mb-4">
+                <h2 class="h4 mb-3">Map preview</h2>
+                <iframe class="map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                    src="https://www.google.com/maps?q=<%= encodeURIComponent(`${spot.title} ${spot.location}`) %>&output=embed"
+                    allowfullscreen></iframe>
+            </div>
+
+            <% if (currentUser) { %>
+                <div class="detail-card mb-4">
+                    <h2 class="h4 mb-3">Leave a review</h2>
+                    <form action="/spots/<%= spot._id %>/reviews" method="POST" class="validated-form" novalidate>
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <fieldset class="starability-basic mb-3">
+                            <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating.">
+                            <input type="radio" id="first-rate1" name="review[rating]" value="1">
+                            <label for="first-rate1" title="Terrible">1 star</label>
+                            <input type="radio" id="first-rate2" name="review[rating]" value="2">
+                            <label for="first-rate2" title="Not good">2 stars</label>
+                            <input type="radio" id="first-rate3" name="review[rating]" value="3">
+                            <label for="first-rate3" title="Average">3 stars</label>
+                            <input type="radio" id="first-rate4" name="review[rating]" value="4">
+                            <label for="first-rate4" title="Very good">4 stars</label>
+                            <input type="radio" id="first-rate5" name="review[rating]" value="5">
+                            <label for="first-rate5" title="Amazing">5 stars</label>
+                        </fieldset>
+                        <div class="mb-3">
+                            <label class="form-label" for="body">Review</label>
+                            <textarea class="form-control" name="review[body]" id="body" rows="4" required></textarea>
+                            <div class="invalid-feedback">Please write a few words about the place.</div>
+                        </div>
+                        <button class="btn btn-primary rounded-pill px-4">Submit review</button>
+                    </form>
+                </div>
+            <% } %>
+
+            <div class="detail-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="h4 mb-0">Recent reviews</h2>
+                    <span class="text-secondary"><%= spot.ratingCount %> total</span>
+                </div>
+
+                <% if (!spot.reviews.length) { %>
+                    <p class="text-secondary mb-0">No reviews yet. Be the first person to share what stood out.</p>
+                <% } %>
+
+                <% spot.reviews.forEach(review => { %>
+                    <article class="review-card">
+                        <div class="d-flex justify-content-between gap-3">
+                            <div>
+                                <h3 class="h6 mb-1"><%= review.author.username %></h3>
+                                <p class="starability-result mb-2" data-rating="<%= review.rating %>">
+                                    Rated: <%= review.rating %> stars
+                                </p>
+                            </div>
+                            <span class="text-secondary small"><%= review.createdAt.toLocaleDateString() %></span>
+                        </div>
+                        <p class="mb-0"><%= review.body %></p>
+
+                        <% if (currentUser && review.author.equals(currentUser._id)) { %>
+                            <form action="/spots/<%= spot._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="mt-3">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <button class="btn btn-sm btn-outline-danger rounded-pill">Delete review</button>
+                            </form>
+                        <% } %>
+                    </article>
+                <% }) %>
+            </div>
+        </div>
     </div>
-</div>
+</section>

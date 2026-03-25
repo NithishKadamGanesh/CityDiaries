@@ -1,34 +1,100 @@
-<% layout('layouts/boilerplate')%>
-<link rel="stylesheet" href="/stylesheets/background.css">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
-    integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-<h1>All HotSpots</h1>
-<div>
-    <a class="btn btn-primary mb-3" href="/spots/new">Add Spot</a>
-</div>
-<% for (let spot of spots){%>
-<div class="card mb-3">
-    <div class="row">
-        <div class="col-md-4">
-            <%if(spot.images.length) {%>
-            <img class="img-fluid img-thumbnail" width="500" height="200" alt="" src="<%=spot.images[0].url%>">
-            <% }else {%>
-            <img class="img-fluid" width="500" height="200" alt=""
-                src="https://images.unsplash.com/photo-1609642779314-20faa2c9a7cd?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1300&q=80">
-            <% } %>
+<% layout('layouts/boilerplate') %>
+
+<section class="container py-4 py-lg-5">
+    <div class="section-heading mb-4">
+        <div>
+            <div class="eyebrow text-dark-emphasis"><%= isDiary ? 'Private collection' : 'Shared feed' %></div>
+            <h1 class="display-6 mb-2"><%= pageTitle %></h1>
+            <p class="section-copy mb-0"><%= intro %></p>
         </div>
-        <div class="col-md-8">
-            <div class="card-body">
-                <h5 class="card-title"><%= spot.title %> </h5>
-                <p>Spot ID: <%= spot._id %> </p>
-                <p class="card-text"><%= spot.description %></p>
-                <p class="card-text"><%= spot.category %></p>
-                <p class="card-text">
-                    <small class="text-muted"><%= spot.location%></small>
-                </p>
-                <a class="btn btn-primary" href="/spots/<%=spot._id%>">View <%=spot.title%></a>
+        <a href="<%= actionHref %>" class="btn btn-dark rounded-pill px-4"><%= actionLabel %></a>
+    </div>
+
+    <form class="search-panel mb-4" action="<%= isDiary ? '/spots/myspots' : '/spots' %>" method="GET">
+        <div class="row g-3 align-items-end">
+            <div class="col-lg-5">
+                <label class="form-label" for="q">Search</label>
+                <input class="form-control form-control-lg" type="text" id="q" name="q" value="<%= filters.q %>" placeholder="Search by title, city, or description">
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <label class="form-label" for="category">Category</label>
+                <select class="form-select form-select-lg" id="category" name="category">
+                    <option value="">All categories</option>
+                    <% categories.forEach(category => { %>
+                        <option value="<%= category %>" <%= filters.category === category ? 'selected' : '' %>><%= category %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <label class="form-label" for="sort">Sort</label>
+                <select class="form-select form-select-lg" id="sort" name="sort">
+                    <option value="newest" <%= filters.sort === 'newest' ? 'selected' : '' %>>Newest</option>
+                    <option value="rating" <%= filters.sort === 'rating' ? 'selected' : '' %>>Top rated</option>
+                    <option value="reviews" <%= filters.sort === 'reviews' ? 'selected' : '' %>>Most reviewed</option>
+                    <option value="title" <%= filters.sort === 'title' ? 'selected' : '' %>>Title</option>
+                    <option value="oldest" <%= filters.sort === 'oldest' ? 'selected' : '' %>>Oldest</option>
+                </select>
+            </div>
+            <div class="col-md-4 col-lg-2 d-grid">
+                <button class="btn btn-primary btn-lg">Apply</button>
             </div>
         </div>
-    </div>
-</div>
-<% }%>
+    </form>
+
+    <% if (!spots.length) { %>
+        <div class="empty-state">
+            <div class="eyebrow text-primary">Nothing here yet</div>
+            <h2 class="h3 mt-2">No matching spots found</h2>
+            <p class="mb-4"><%= emptyState %></p>
+            <a href="<%= actionHref %>" class="btn btn-dark rounded-pill px-4"><%= actionLabel %></a>
+        </div>
+    <% } else { %>
+        <div class="row g-4">
+            <% spots.forEach(spot => { %>
+                <div class="col-md-6 col-xl-4">
+                    <article class="spot-card h-100">
+                        <img class="spot-card-image" src="<%= spot.coverImage %>" alt="<%= spot.title %>">
+                        <div class="spot-card-body">
+                            <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                                <div>
+                                    <span class="badge text-bg-light rounded-pill mb-2"><%= spot.category %></span>
+                                    <h2 class="h4 mb-1"><%= spot.title %></h2>
+                                    <p class="text-secondary mb-0"><%= spot.location %></p>
+                                </div>
+                                <div class="rating-pill">
+                                    <strong><%= spot.ratingAverage.toFixed(1) %></strong>
+                                    <span>/ 5</span>
+                                </div>
+                            </div>
+                            <p class="spot-card-copy"><%= spot.description.length > 145 ? `${spot.description.slice(0, 145)}...` : spot.description %></p>
+                            <div class="spot-card-meta">
+                                <span>By <%= spot.author.username %></span>
+                                <span><%= spot.ratingCount %> review<%= spot.ratingCount === 1 ? '' : 's' %></span>
+                                <span><%= spot.createdAt.toLocaleDateString() %></span>
+                            </div>
+                            <a class="btn btn-outline-dark rounded-pill mt-4" href="/spots/<%= spot._id %>">Read entry</a>
+                        </div>
+                    </article>
+                </div>
+            <% }) %>
+        </div>
+
+        <% if (pagination.totalPages > 1) { %>
+            <nav class="mt-5" aria-label="Diary pagination">
+                <ul class="pagination justify-content-center gap-2 flex-wrap">
+                    <li class="page-item <%= pagination.hasPrev ? '' : 'disabled' %>">
+                        <a class="page-link rounded-pill" href="<%= buildPageLink(pagination.prevPage) %>">Previous</a>
+                    </li>
+                    <% for (let page = 1; page <= pagination.totalPages; page++) { %>
+                        <li class="page-item <%= page === pagination.currentPage ? 'active' : '' %>">
+                            <a class="page-link rounded-pill" href="<%= buildPageLink(page) %>"><%= page %></a>
+                        </li>
+                    <% } %>
+                    <li class="page-item <%= pagination.hasNext ? '' : 'disabled' %>">
+                        <a class="page-link rounded-pill" href="<%= buildPageLink(pagination.nextPage) %>">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        <% } %>
+    <% } %>
+</section>
