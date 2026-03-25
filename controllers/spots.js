@@ -3,7 +3,7 @@ const path = require('path');
 const Spot = require('../models/spot');
 const User = require('../models/user');
 const { cloudinary, hasCloudinaryConfig, formatUploadedFiles } = require("../cloudinary");
-const { SPOT_CATEGORIES, SORT_OPTIONS } = require('../utils/constants');
+const { SPOT_CATEGORIES, SORT_OPTIONS, SAVED_SPOT_STATUSES } = require('../utils/constants');
 
 const PAGE_SIZE = 6;
 
@@ -16,6 +16,7 @@ function normalizeFilters(query = {}) {
         q: (query.q || '').trim(),
         category: query.category || '',
         sort: SORT_OPTIONS[query.sort] ? query.sort : 'newest',
+        status: query.status || '',
         page: Math.max(parseInt(query.page, 10) || 1, 1)
     };
 }
@@ -63,6 +64,7 @@ function buildQueryString(filters, nextPage) {
     if (filters.q) params.set('q', filters.q);
     if (filters.category) params.set('category', filters.category);
     if (filters.sort && filters.sort !== 'newest') params.set('sort', filters.sort);
+    if (filters.status) params.set('status', filters.status);
     if (nextPage > 1) params.set('page', nextPage);
 
     const queryString = params.toString();
@@ -90,7 +92,8 @@ async function renderSpotCollection(res, {
     emptyState,
     actionHref,
     actionLabel,
-    isDiary
+    isDiary,
+    savedSpotStatuses = {}
 }) {
     const query = customQuery || buildSpotQuery(filters, currentUserId);
     const total = await Spot.countDocuments(query);
@@ -114,13 +117,26 @@ async function renderSpotCollection(res, {
         actionHref,
         actionLabel,
         isDiary,
+        savedSpotStatuses,
+        savedStatusOptions: SAVED_SPOT_STATUSES,
         buildPageLink: page => buildQueryString(filters, page)
     });
 }
 
+function getSavedSpotRecord(user, spotId) {
+    if (!user || !user.favorites) return null;
+    return user.favorites.find(favorite => favorite.spot.equals(spotId)) || null;
+}
+
 function isSpotFavorited(user, spotId) {
-    if (!user || !user.favorites) return false;
-    return user.favorites.some(favoriteId => favoriteId.equals(spotId));
+    return Boolean(getSavedSpotRecord(user, spotId));
+}
+
+function buildSavedStatusesMap(favorites = []) {
+    return favorites.reduce((acc, favorite) => {
+        acc[String(favorite.spot)] = favorite.status;
+        return acc;
+    }, {});
 }
 
 module.exports.index = async (req, res) => {
@@ -132,7 +148,8 @@ module.exports.index = async (req, res) => {
         emptyState: 'No diary entries match your filters yet. Try another category or a broader search.',
         actionHref: '/spots/new',
         actionLabel: 'Add a new spot',
-        isDiary: false
+        isDiary: false,
+        savedSpotStatuses: buildSavedStatusesMap(req.user?.favorites || [])
     });
 };
 
@@ -146,13 +163,17 @@ module.exports.showMySpots = async (req, res) => {
         emptyState: 'Your diary is still empty. Add your first spot to start building a personal city guide.',
         actionHref: '/spots/new',
         actionLabel: 'Create my first entry',
-        isDiary: true
+        isDiary: true,
+        savedSpotStatuses: buildSavedStatusesMap(req.user?.favorites || [])
     });
 };
 
 module.exports.showSavedSpots = async (req, res) => {
     const filters = normalizeFilters(req.query);
-    const favoriteIds = req.user.favorites || [];
+    const favoriteRecords = (req.user.favorites || []).filter(favorite => {
+        return !filters.status || favorite.status === filters.status;
+    });
+    const favoriteIds = favoriteRecords.map(favorite => favorite.spot);
 
     await renderSpotCollection(res, {
         filters,
@@ -165,7 +186,8 @@ module.exports.showSavedSpots = async (req, res) => {
         emptyState: 'You have not saved any spots yet. Open a place entry and tap Save to keep it here.',
         actionHref: '/spots',
         actionLabel: 'Browse all spots',
-        isDiary: false
+        isDiary: false,
+        savedSpotStatuses: buildSavedStatusesMap(req.user.favorites || [])
     });
 };
 
@@ -199,9 +221,15 @@ module.exports.showSpot = async (req, res) => {
         return res.redirect('/spots');
     }
 
+    const savedSpotRecord = getSavedSpotRecord(req.user, spot._id);
+    const userWithCollections = req.user ? await User.findById(req.user._id) : null;
+
     res.render('spots/show', {
         spot,
-        isFavorited: isSpotFavorited(req.user, spot._id)
+        isFavorited: Boolean(savedSpotRecord),
+        savedSpotStatus: savedSpotRecord?.status || 'want_to_visit',
+        savedStatusOptions: SAVED_SPOT_STATUSES,
+        userCollections: userWithCollections?.collections || []
     });
 };
 
@@ -254,8 +282,8 @@ module.exports.updateSpot = async (req, res) => {
 module.exports.deleteSpot = async (req, res) => {
     const { id } = req.params;
     await User.updateMany(
-        { favorites: id },
-        { $pull: { favorites: id } }
+        { 'favorites.spot': id },
+        { $pull: { favorites: { spot: id } } }
     );
     await Spot.findByIdAndDelete(id);
     req.flash('success', 'Diary entry deleted.');
@@ -271,14 +299,63 @@ module.exports.toggleFavorite = async (req, res) => {
         return res.redirect('/spots');
     }
 
-    const alreadyFavorited = isSpotFavorited(req.user, spot._id);
+    const existingFavorite = getSavedSpotRecord(req.user, spot._id);
 
-    if (alreadyFavorited) {
-        await User.findByIdAndUpdate(req.user._id, { $pull: { favorites: spot._id } });
+    if (existingFavorite) {
+        await User.findByIdAndUpdate(req.user._id, {
+            $pull: { favorites: { spot: spot._id } }
+        });
         req.flash('success', 'Spot removed from your saved list.');
     } else {
-        await User.findByIdAndUpdate(req.user._id, { $addToSet: { favorites: spot._id } });
+        await User.findByIdAndUpdate(req.user._id, {
+            $addToSet: {
+                favorites: {
+                    spot: spot._id,
+                    status: 'want_to_visit'
+                }
+            }
+        });
         req.flash('success', 'Spot saved for later.');
+    }
+
+    req.user = await User.findById(req.user._id);
+    res.redirect(`/spots/${spot._id}`);
+};
+
+module.exports.updateSavedSpotStatus = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    const statusValues = SAVED_SPOT_STATUSES.map(option => option.value);
+
+    if (!statusValues.includes(status)) {
+        req.flash('error', 'Please choose a valid saved status.');
+        return res.redirect(`/spots/${id}`);
+    }
+
+    const spot = await Spot.findById(id);
+    if (!spot) {
+        req.flash('error', 'Cannot find that spot.');
+        return res.redirect('/spots');
+    }
+
+    const existingFavorite = getSavedSpotRecord(req.user, spot._id);
+
+    if (!existingFavorite) {
+        await User.findByIdAndUpdate(req.user._id, {
+            $addToSet: {
+                favorites: {
+                    spot: spot._id,
+                    status
+                }
+            }
+        });
+        req.flash('success', 'Spot saved with your travel status.');
+    } else {
+        await User.updateOne(
+            { _id: req.user._id, 'favorites.spot': spot._id },
+            { $set: { 'favorites.$.status': status } }
+        );
+        req.flash('success', 'Saved spot status updated.');
     }
 
     req.user = await User.findById(req.user._id);

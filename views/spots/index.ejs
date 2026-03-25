@@ -10,7 +10,7 @@
         <a href="<%= actionHref %>" class="btn btn-dark rounded-pill px-4"><%= actionLabel %></a>
     </div>
 
-    <form class="search-panel mb-4" action="<%= isDiary ? '/spots/myspots' : '/spots' %>" method="GET">
+    <form class="search-panel mb-4" action="<%= pageTitle === 'Saved Spots' ? '/spots/saved' : (isDiary ? '/spots/myspots' : '/spots') %>" method="GET">
         <div class="row g-3 align-items-end">
             <div class="col-lg-5">
                 <label class="form-label" for="q">Search</label>
@@ -25,6 +25,17 @@
                     <% }) %>
                 </select>
             </div>
+            <% if (pageTitle === 'Saved Spots') { %>
+                <div class="col-md-4 col-lg-2">
+                    <label class="form-label" for="status">Status</label>
+                    <select class="form-select form-select-lg" id="status" name="status">
+                        <option value="">All statuses</option>
+                        <% savedStatusOptions.forEach(option => { %>
+                            <option value="<%= option.value %>" <%= filters.status === option.value ? 'selected' : '' %>><%= option.label %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            <% } %>
             <div class="col-md-4 col-lg-2">
                 <label class="form-label" for="sort">Sort</label>
                 <select class="form-select form-select-lg" id="sort" name="sort">
@@ -72,6 +83,13 @@
                                 <span><%= spot.ratingCount %> review<%= spot.ratingCount === 1 ? '' : 's' %></span>
                                 <span><%= spot.createdAt.toLocaleDateString() %></span>
                             </div>
+                            <% if (savedSpotStatuses[String(spot._id)]) { %>
+                                <div class="mt-3">
+                                    <span class="badge text-bg-warning rounded-pill px-3 py-2">
+                                        <%= savedStatusOptions.find(option => option.value === savedSpotStatuses[String(spot._id)]).label %>
+                                    </span>
+                                </div>
+                            <% } %>
                             <a class="btn btn-outline-dark rounded-pill mt-4" href="/spots/<%= spot._id %>">Read entry</a>
                         </div>
                     </article>

@@ -23,6 +23,7 @@ const { SPOT_CATEGORIES } = require('./utils/constants');
 const userRoutes = require('./routes/users');
 const spotRoutes = require('./routes/spots');
 const reviewRoutes = require('./routes/reviews');
+const collectionRoutes = require('./routes/collections');
 
 const app = express();
 const csrfProtection = csrf();
@@ -91,6 +92,7 @@ app.get('/', catchAsync(async (req, res) => {
 app.use('/', userRoutes);
 app.use('/spots', spotRoutes);
 app.use('/spots/:id/reviews', reviewRoutes);
+app.use('/collections', collectionRoutes);
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));

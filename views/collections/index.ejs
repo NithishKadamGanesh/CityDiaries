@@ -1,0 +1,42 @@
+<% layout('layouts/boilerplate') %>
+
+<section class="container py-4 py-lg-5">
+    <div class="section-heading mb-4">
+        <div>
+            <div class="eyebrow text-dark-emphasis">Trip builder</div>
+            <h1 class="display-6 mb-2">Collections</h1>
+            <p class="section-copy mb-0">Group saved places into mini-itineraries like food crawls, weekend plans, or neighborhood hit lists.</p>
+        </div>
+        <a href="/spots" class="btn btn-dark rounded-pill px-4">Browse spots</a>
+    </div>
+
+    <% if (!collections.length) { %>
+        <div class="empty-state">
+            <div class="eyebrow text-primary">Start planning</div>
+            <h2 class="h3 mt-2">No collections yet</h2>
+            <p class="mb-4">Open any spot and create a collection like “Tokyo food weekend” or “Best bookstores in Prague”.</p>
+            <a href="/spots" class="btn btn-dark rounded-pill px-4">Explore spots</a>
+        </div>
+    <% } else { %>
+        <div class="row g-4">
+            <% collections.forEach(collection => { %>
+                <div class="col-md-6 col-xl-4">
+                    <article class="spot-card h-100">
+                        <% const firstSpot = collection.spots[0]; %>
+                        <img class="spot-card-image" src="<%= firstSpot ? firstSpot.coverImage : 'https://images.unsplash.com/photo-1517840901100-8179e982acb7?auto=format&fit=crop&w=1200&q=80' %>" alt="<%= collection.name %>">
+                        <div class="spot-card-body">
+                            <span class="badge text-bg-light rounded-pill mb-2">Collection</span>
+                            <h2 class="h4 mb-1"><%= collection.name %></h2>
+                            <p class="spot-card-copy"><%= collection.description || 'A personal group of places to revisit, recommend, or plan around.' %></p>
+                            <div class="spot-card-meta">
+                                <span><%= collection.spots.length %> spot<%= collection.spots.length === 1 ? '' : 's' %></span>
+                                <span>Created <%= collection.createdAt.toLocaleDateString() %></span>
+                            </div>
+                            <a class="btn btn-outline-dark rounded-pill mt-4" href="/collections/<%= collection._id %>">Open collection</a>
+                        </div>
+                    </article>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</section>

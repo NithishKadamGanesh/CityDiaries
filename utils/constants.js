@@ -17,7 +17,14 @@ const SORT_OPTIONS = {
     title: { title: 1 }
 };
 
+const SAVED_SPOT_STATUSES = [
+    { value: 'want_to_visit', label: 'Want to visit' },
+    { value: 'visited', label: 'Visited' },
+    { value: 'recommended', label: 'Recommended' }
+];
+
 module.exports = {
     SPOT_CATEGORIES,
-    SORT_OPTIONS
+    SORT_OPTIONS,
+    SAVED_SPOT_STATUSES
 };

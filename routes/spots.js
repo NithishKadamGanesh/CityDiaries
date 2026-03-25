@@ -25,6 +25,7 @@ router.get('/new', isLoggedIn, spots.renderNewForm);
 router.get('/myspots', isLoggedIn, catchAsync(spots.showMySpots));
 router.get('/saved', isLoggedIn, catchAsync(spots.showSavedSpots));
 router.post('/:id/favorite', isLoggedIn, catchAsync(spots.toggleFavorite));
+router.post('/:id/saved-status', isLoggedIn, catchAsync(spots.updateSavedSpotStatus));
 
 router.route('/:id')
     .get(catchAsync(spots.showSpot))

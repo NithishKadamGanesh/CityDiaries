@@ -1,0 +1,44 @@
+<% layout('layouts/boilerplate') %>
+
+<section class="container py-4 py-lg-5">
+    <div class="section-heading mb-4">
+        <div>
+            <div class="eyebrow text-dark-emphasis">Collection detail</div>
+            <h1 class="display-6 mb-2"><%= collection.name %></h1>
+            <p class="section-copy mb-0"><%= collection.description || 'A flexible group of saved places for a future trip or themed outing.' %></p>
+        </div>
+        <a href="/collections" class="btn btn-dark rounded-pill px-4">All collections</a>
+    </div>
+
+    <% if (!collection.spots.length) { %>
+        <div class="empty-state">
+            <div class="eyebrow text-primary">Collection is empty</div>
+            <h2 class="h3 mt-2">Add some places</h2>
+            <p class="mb-4">Open any spot and add it into this collection to turn it into an itinerary.</p>
+            <a href="/spots" class="btn btn-dark rounded-pill px-4">Browse spots</a>
+        </div>
+    <% } else { %>
+        <div class="row g-4">
+            <% collection.spots.forEach(spot => { %>
+                <div class="col-md-6 col-xl-4">
+                    <article class="spot-card h-100">
+                        <img class="spot-card-image" src="<%= spot.coverImage %>" alt="<%= spot.title %>">
+                        <div class="spot-card-body">
+                            <span class="badge text-bg-light rounded-pill mb-2"><%= spot.category %></span>
+                            <h2 class="h4 mb-1"><%= spot.title %></h2>
+                            <p class="text-secondary mb-2"><%= spot.location %></p>
+                            <p class="spot-card-copy"><%= spot.description.length > 120 ? `${spot.description.slice(0, 120)}...` : spot.description %></p>
+                            <div class="d-flex flex-wrap gap-2 mt-4">
+                                <a class="btn btn-outline-dark rounded-pill" href="/spots/<%= spot._id %>">Open spot</a>
+                                <form action="/collections/<%= collection._id %>/spots/<%= spot._id %>/remove" method="POST">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <button class="btn btn-outline-danger rounded-pill">Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+</section>
