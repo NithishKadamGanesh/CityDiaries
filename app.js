@@ -112,7 +112,10 @@ app.use((err, req, res, next) => {
 async function startServer() {
     try {
         const dbInfo = await connectDB();
-        await seedDatabase();
+        const shouldSeedDemoData = dbInfo.isInMemory || process.env.SEED_DEMO_DATA === 'true';
+        if (shouldSeedDemoData) {
+            await seedDatabase();
+        }
 
         app.locals.dbInfo = dbInfo;
 

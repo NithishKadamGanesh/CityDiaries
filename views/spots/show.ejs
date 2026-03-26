@@ -6,6 +6,16 @@
         <div class="col-lg-7">
             <img src="<%= spot.coverImage %>" class="detail-hero-image" alt="<%= spot.title %>">
 
+            <% if (spot.images.length > 1) { %>
+                <div class="image-grid mt-3">
+                    <% spot.images.forEach((img, i) => { %>
+                        <figure class="image-check-card mb-0">
+                            <img src="<%= img.url %>" alt="<%= spot.title %> photo <%= i + 1 %>">
+                        </figure>
+                    <% }) %>
+                </div>
+            <% } %>
+
             <div class="detail-card mt-4">
                 <div class="d-flex flex-wrap justify-content-between gap-3">
                     <div>
@@ -100,6 +110,14 @@
                 <iframe class="map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
                     src="https://www.google.com/maps?q=<%= encodeURIComponent(`${spot.title} ${spot.location}`) %>&output=embed"
                     allowfullscreen></iframe>
+                <a
+                    class="btn btn-outline-dark rounded-pill px-4 mt-3"
+                    href="https://www.google.com/maps/search/?api=1&query=<%= encodeURIComponent(`${spot.title} ${spot.location}`) %>"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Open in Google Maps
+                </a>
             </div>
 
             <% if (currentUser) { %>
