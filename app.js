@@ -9,6 +9,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const csrf = require('csurf');
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
 const passport = require('passport');
@@ -65,6 +66,21 @@ const sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 };
+
+// Persist sessions in MongoDB when a real database is configured, so logins
+// survive restarts and the free-tier instance going to sleep. Without this,
+// express-session's default in-memory store is wiped on every restart and all
+// users get logged out. Falls back to the in-memory store in local dev (no
+// MONGO_URL), which pairs with the in-memory preview database.
+if (process.env.MONGO_URL) {
+    sessionConfig.store = MongoStore.create({
+        mongoUrl: process.env.MONGO_URL,
+        collectionName: 'sessions',
+        ttl: 60 * 60 * 24 * 7, // 7 days, matches the cookie lifetime
+        touchAfter: 24 * 60 * 60, // only rewrite an unchanged session once/day
+        crypto: { secret: process.env.SESSION_SECRET || 'dev-session-secret-change-me' }
+    });
+}
 
 app.use(session(sessionConfig));
 app.use(flash());
