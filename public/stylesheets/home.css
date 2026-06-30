@@ -18,6 +18,12 @@
     font-weight: 700;
 }
 
+/* The white pill button (Start writing / Add a spot) needs dark text — the
+   rule above would otherwise paint it white-on-white and hide the label. */
+.home-nav a.btn-light {
+    color: #18222f;
+}
+
 .hero-grid {
     min-height: calc(100vh - 140px);
 }
