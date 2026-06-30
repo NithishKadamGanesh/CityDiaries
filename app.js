@@ -30,6 +30,13 @@ const csrfProtection = csrf();
 const isProduction = process.env.NODE_ENV === 'production';
 const port = process.env.PORT || 3000;
 
+// Render (and most PaaS hosts) terminate TLS at a proxy. Without trusting it,
+// express-session sees the upstream hop as plain HTTP and refuses to set the
+// `secure` session cookie, which silently breaks login in production.
+if (isProduction) {
+    app.set('trust proxy', 1);
+}
+
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
