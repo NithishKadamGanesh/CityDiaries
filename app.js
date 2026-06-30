@@ -77,8 +77,7 @@ if (process.env.MONGO_URL) {
         mongoUrl: process.env.MONGO_URL,
         collectionName: 'sessions',
         ttl: 60 * 60 * 24 * 7, // 7 days, matches the cookie lifetime
-        touchAfter: 24 * 60 * 60, // only rewrite an unchanged session once/day
-        crypto: { secret: process.env.SESSION_SECRET || 'dev-session-secret-change-me' }
+        touchAfter: 24 * 60 * 60 // only rewrite an unchanged session once/day
     });
 }
 
